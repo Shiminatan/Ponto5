@@ -22,7 +22,7 @@ import java.util.*
 import com.projeto.ponto5.BuildConfig
 
 // -------------------- MODELOS --------------------
-data class TokenResponse(val accessToken: String)
+data class TokenResponse(val access_token: String)
 
 data class InclusaoPontoRequest(
     val cpf: String,
@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
                     password = BuildConfig.PASSWORD,
                     clientId = "3"
                 )
-                token = response.accessToken
+                token = response.access_token
                 Log.d("API", "Token recebido: $token")
             } catch (e: Exception) {
                 Log.e("API", "Erro ao obter token: ${e.message}")
