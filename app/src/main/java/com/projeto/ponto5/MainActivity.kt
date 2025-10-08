@@ -6,8 +6,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -25,7 +29,14 @@ class MainActivity : ComponentActivity() {
                 val viewModel: MainViewModel = viewModel()
 
                 val cpf by viewModel.cpf.collectAsState()
-                val resultado by viewModel.resultado.collectAsState()
+                var resultado by remember { mutableStateOf("") }
+
+                LaunchedEffect(viewModel) {
+                    viewModel.login()
+                    viewModel.eventoResultado.collect { msg ->
+                        resultado = msg
+                    }
+                }
 
                 Column(
                     modifier = Modifier
@@ -59,8 +70,6 @@ class MainActivity : ComponentActivity() {
                         Text(resultado, style = MaterialTheme.typography.bodyLarge, color = White)
                     }
                 }
-
-                viewModel.login()
             }
         }
     }

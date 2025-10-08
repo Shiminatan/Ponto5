@@ -6,11 +6,14 @@ import com.projeto.ponto5.BuildConfig
 import com.projeto.ponto5.model.InclusaoPontoRequest
 import com.projeto.ponto5.network.RetrofitClients
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class MainViewModel : ViewModel() {
 
@@ -20,16 +23,20 @@ class MainViewModel : ViewModel() {
     private val _token = MutableStateFlow<String?>(null)
     val token = _token.asStateFlow()
 
-    private val _resultado = MutableStateFlow("")
-    val resultado = _resultado.asStateFlow()
+    private val _eventoResultado = MutableSharedFlow<String>()
+
+    val eventoResultado = _eventoResultado.asSharedFlow()
 
     fun atualizarCpf(novoCpf: String) {
         _cpf.value = novoCpf
     }
 
     private fun atualizarResultado(msg: String) {
-        _resultado.value = msg
+        viewModelScope.launch {
+            _eventoResultado.emit(msg)
+        }
     }
+
 
     private fun salvarToken(novoToken: String) {
         _token.value = novoToken
